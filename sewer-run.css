@@ -1,16 +1,15 @@
-html,
-body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-}
-
-body {
-    background: #000000 url("../Schermafbeelding 2026-10-14 102459.png") center / contain repeat-y;
-}
-#playerimage {
-    position: absolute;
-    left: 475px;
-    bottom: 20px;
-    width: 100px;
-}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Moving Mouse</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <main class="game">
+        <canvas id="canvas1" width="670" height="582" aria-label="Spelbaan"></canvas>
+        <img id="playerimage" src="player.png" alt="Muis">
+    </main>
+</body>
+</html>
