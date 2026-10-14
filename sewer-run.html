@@ -1,16 +1,34 @@
-html,
-body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Background</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body id="demo">
+    <script>
+        let i = 0;
+        const demo = document.getElementById("demo");
 
-body {
-    background: #000000 url("../Schermafbeelding 2026-10-14 102459.png") center / contain repeat-y;
-}
-#playerimage {
-    position: absolute;
-    left: 450px;
-    top: 550px;
-    width: 100px;
-}
+        setInterval(() => {
+            i++;
+            demo.style.backgroundPositionY = `${i}px`;
+        }, 5);
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<canvas id="canvas1"></canvas>
+<img id="playerimage" src="c:\Users\sloof\OneDrive\Pictures\Screenshots\player.png"
+</body>
+</html>
+
