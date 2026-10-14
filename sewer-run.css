@@ -10,7 +10,7 @@ body {
 }
 #playerimage {
     position: absolute;
-    left: 450px;
-    top: 550px;
+    left: 475px;
+    bottom: 20px;
     width: 100px;
 }
