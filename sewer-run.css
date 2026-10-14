@@ -1,1 +1,16 @@
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
 
+body {
+    background: #000000 url("../Schermafbeelding 2026-10-14 102459.png") center / contain repeat-y;
+}
+#playerimage {
+    position: absolute;
+    left: 450px;
+    top: 550px;
+    width: 100px;
+}
