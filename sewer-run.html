@@ -2,22 +2,14 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Moving Mouse</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="script.js" defer></script>
 </head>
-<body id="demo">
-    <canvas id="canvas1"></canvas>
-    <img id="playerimage" src="player.png" alt="Muis">
-    <script>
-        let i = 0;
-        const demo = document.getElementById("demo");
-
-        setInterval(() => {
-            i++;
-            demo.style.backgroundPositionY = `${i}px`;
-        }, 5);
-    </script>
+<body>
+    <main class="game">
+        <canvas id="canvas1" width="670" height="582" aria-label="Spelbaan"></canvas>
+        <img id="playerimage" src="player.png" alt="Muis">
+    </main>
 </body>
 </html>
