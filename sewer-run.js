@@ -1,14 +1,19 @@
-class Background {
-    constructor(gamewidth, gameheight){
-        this.gamewidth = gamewidth;
-        this.gameheight = gameheight;
-        this.image = document.getElementById('background'); //rename background naar de foto's naam
-        this.x = 0
-        this.y = 0
-        this.width = 2000
-        this.height = 2000 // herplaats dit met de hoogte en breedte van de background
+const afbeelding = document.getElementById('playerimage');
+let positieX = afbeelding ? afbeelding.offsetLeft : 0;
+const speed = 265;
+
+document.addEventListener('keydown', (event) => {
+    if (!afbeelding) return;
+
+    const toets = event.key.toLowerCase();
+
+    if (toets === 'a') {
+        positieX -= speed;
+    } else if (toets === 'd') {
+        positieX += speed;
+    } else {
+        return;
     }
-    draw(context){
-        context.drawImage(this.image)
-    }
-}
+
+    afbeelding.style.left = positieX + 'px';
+});
