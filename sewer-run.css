@@ -1,1 +1,33 @@
 
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background: #000000;
+}
+
+.game {
+    position: relative;
+    width: min(100vw, 115.12vh);
+    aspect-ratio: 670 / 582;
+}
+
+#canvas1 {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+#playerimage {
+    position: absolute;
+    left: 42.5%;
+    bottom: 3.4%;
+    width: 15%;
+}
