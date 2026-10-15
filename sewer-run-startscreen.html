@@ -1,32 +1,43 @@
 <!DOCTYPE html>
 <html lang="nl">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Sewage Run</title>
-        <link rel="stylesheet" href="sewagerun.css">
-    </head>
-    <body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sewer Run</title>
+    <link rel="stylesheet" href="sewagerun.css">
+</head>
+<body>
 
-        <h1>Sewer Run</h1>
+    <!-- Moet nog geluid asset maken of vinden -->
+    <audio id="startgeluid" src="start.mp3"></audio>
 
-        <h2>Start</h2>
+    <div class="startscherm">
 
-        <div class="startimage">
-            <img src="start image.jpg" alt="Start">
-                <div class="start"></div>
+        <h1 class="titel">SEWER RUN</h1>
+<!--start asset moet onzichtbaar worden en achter afbeelding hyperlink-->
+        <div class="put">
+            <img src="start image.jpg" alt="Put" class="put-afbeelding">
+            <button id="start-knop">START</button>
+        </div>
+
+        <div class="karakter-keuze">
+            <div class="karakter karakter-gekozen">
+                <img src="rat.png" alt="Rat" class="portret">
+                <p>RAT</p>
             </div>
 
-            <div class="backgroundimage">
-                <img src="background image.jpg" alt="Background image">
+            <div class="karakter karakter-slotje">
+                <span class="slotje">🔒</span>
+                <p>LOCKED</p>
             </div>
 
-       
-        
-        <button id="anton">Start</button>
+            <div class="karakter karakter-slotje">
+                <span class="slotje">🔒</span>
+                <p>LOCKED</p>
+            </div>
+        </div>
 
-        <script src="js.js"></script>
+    </div>
 
-
-    </body>
+</body>
 </html>
