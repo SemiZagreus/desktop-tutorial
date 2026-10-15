@@ -46,7 +46,7 @@ body {
     object-fit: contain;
 }
 
-/* De knop die precies op het midden van de put plakt */
+/* de knop moet nog onzichtbaar en achter de put midden */
 #start-knop {
     position: absolute;
     top: 50%;
