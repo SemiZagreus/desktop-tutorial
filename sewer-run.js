@@ -1,11 +1,11 @@
 const spelerAfbeelding = 'images/speler.png';
 const achtergrondAfbeelding = 'images/achtergrond.png';
+const valAfbeelding = 'images/val.png';
+const val = new Image();
+val.src = valAfbeelding;
 
 const canvas = document.getElementById('canvas1');
 const ctx = canvas.getContext('2d');
-if (!ctx) {
-    throw new Error('Canvas 2D context is not available.');
-}
 
 const baan = new Image();
 baan.src = achtergrondAfbeelding;
@@ -14,9 +14,37 @@ let scrollY = 0;
 let previousFrame = 0;
 let animationFrameId = 0;
 let gamePaused = false;
+let gameOver = false;
+let levens = 3;
+
+const afbeelding = document.getElementById('playerimage');
+afbeelding.src = spelerAfbeelding;
+const levensElement = document.getElementById('levens');
+const gameOverElement = document.getElementById('game-over');
+const restartButton = document.getElementById('restart-button');
+
+const updateLevens = () => {
+    const hartjes = levensElement.querySelectorAll('img');
+    hartjes.forEach((hartje, index) => {
+        hartje.hidden = index >= levens;
+    });
+    levensElement.setAttribute('aria-label', `Levens: ${levens}`);
+};
+
+let positieX = 287;
+let canPress = true;
+const speed = 215;
+const minX = 71;
+const maxX = 494;
+
+const baanPosities = [71, 287, 494];
+const vallen = [];
+let tijdTotVolgendeVal = 1000;
+const valBreedte = 110;
+const valHoogte = 132;
 
 const tekenFrame = (tijd) => {
-    if (gamePaused) return;
+    if (gamePaused || gameOver) return;
 
     const verstreken = previousFrame ? tijd - previousFrame : 0;
     previousFrame = tijd;
@@ -25,6 +53,58 @@ const tekenFrame = (tijd) => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(baan, 0, scrollY - canvas.height, canvas.width, canvas.height);
     ctx.drawImage(baan, 0, scrollY, canvas.width, canvas.height);
+
+    const spelerBreedte = canvas.width * 0.15;
+    const spelerHoogte = spelerBreedte * afbeelding.naturalHeight / afbeelding.naturalWidth;
+    const spelerBoven = canvas.height * 0.966 - spelerHoogte;
+    const ratHitbox = {
+        left: positieX + spelerBreedte * 0.2,
+        right: positieX + spelerBreedte * 0.8,
+        top: spelerBoven + spelerHoogte * 0.2,
+        bottom: spelerBoven + spelerHoogte * 0.85,
+    };
+    tijdTotVolgendeVal -= verstreken;
+    if (val.complete && val.naturalWidth > 0 && tijdTotVolgendeVal <= 0) {
+        vallen.push({
+            baan: Math.floor(Math.random() * baanPosities.length),
+            y: -valHoogte,
+        });
+        tijdTotVolgendeVal = 1200 + Math.random() * 1000;
+    }
+
+    for (let i = vallen.length - 1; i >= 0; i--) {
+        const vallendeVal = vallen[i];
+        vallendeVal.y += verstreken * 0.2;
+
+        const x = baanPosities[vallendeVal.baan] + spelerBreedte / 2 - valBreedte / 2;
+        ctx.drawImage(val, x, vallendeVal.y, valBreedte, valHoogte);
+
+        const valHitbox = {
+            left: x + valBreedte * 0.28,
+            right: x + valBreedte * 0.72,
+            top: vallendeVal.y + valHoogte * 0.43,
+            bottom: vallendeVal.y + valHoogte * 0.76,
+        };
+        const raaktRat =
+            valHitbox.left < ratHitbox.right &&
+            valHitbox.right > ratHitbox.left &&
+            valHitbox.top < ratHitbox.bottom &&
+            valHitbox.bottom > ratHitbox.top;
+
+        if (raaktRat) {
+            vallen.splice(i, 1);
+            levens -= 1;
+            updateLevens();
+
+            if (levens <= 0) {
+                gameOver = true;
+                gameOverElement.hidden = false;
+                return;
+            }
+        } else if (vallendeVal.y > canvas.height) {
+            vallen.splice(i, 1);
+        }
+    }
 
     animationFrameId = requestAnimationFrame(tekenFrame);
 };
@@ -35,22 +115,36 @@ baan.addEventListener('load', () => {
     }
 });
 
-baan.addEventListener('error', () => {
-    console.error(`Could not load game background: ${baan.src}`);
-});
+const herstartSpel = () => {
+    cancelAnimationFrame(animationFrameId);
+    vallen.length = 0;
+    levens = 3;
+    positieX = 287;
+    scrollY = 0;
+    previousFrame = 0;
+    tijdTotVolgendeVal = 1000;
+    gamePaused = false;
+    gameOver = false;
+    gameOverElement.hidden = true;
+    updateLevens();
+    afbeelding.style.left = `${(positieX / canvas.width) * 100}%`;
 
-const afbeelding = document.getElementById('playerimage');
-afbeelding.src = spelerAfbeelding;
-let positieX = 287;
-let canPress = true;
-const speed = 215;
-const minX = 71;
-const maxX = 494;
+    if (baan.complete && baan.naturalWidth > 0) {
+        animationFrameId = requestAnimationFrame(tekenFrame);
+    }
+};
+
+restartButton.addEventListener('click', herstartSpel);
 
 afbeelding.style.left = `${(positieX / canvas.width) * 100}%`;
 
 document.addEventListener('keydown', (event) => {
-    if (gamePaused || !canPress) return;
+    if (event.key.toLowerCase() === 'r' && gameOver) {
+        herstartSpel();
+        return;
+    }
+
+    if (gamePaused || gameOver || !canPress) return;
 
     const toets = event.key.toLowerCase();
 
@@ -73,7 +167,7 @@ document.addEventListener('keydown', (event) => {
 document.addEventListener('keydown', (event) => {
     if (event.code !== 'Space') return;
     event.preventDefault();
-    if (event.repeat) return;
+    if (event.repeat || gameOver) return;
 
     if (gamePaused) {
         gamePaused = false;
