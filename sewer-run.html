@@ -9,7 +9,18 @@
 <body>
     <main class="game">
         <canvas id="canvas1" width="670" height="582" aria-label="Spelbaan"></canvas>
-        <img id="playerimage" src="player.png" alt="Muis">
+        <img id="playerimage" alt="Muis">
+        <div id="levens" role="img" aria-label="Levens: 3" aria-live="polite">
+            <img src="images/hart.png" alt="" aria-hidden="true">
+            <img src="images/hart.png" alt="" aria-hidden="true">
+            <img src="images/hart.png" alt="" aria-hidden="true">
+        </div>
+        <div id="game-over" hidden>
+            <div class="game-over-screen">
+                <img src="images/Game over.png" alt="Game over">
+                <button id="restart-button" type="button" aria-label="Restart"></button>
+            </div>
+        </div>
     </main>
 </body>
 </html>
