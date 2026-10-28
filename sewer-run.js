@@ -3,6 +3,9 @@ const achtergrondAfbeelding = 'images/achtergrond.png';
 const valAfbeelding = 'images/val.png';
 const val = new Image();
 val.src = valAfbeelding;
+const hart = new Image();
+hart.src = 'images/hart.png';
+
 
 const canvas = document.getElementById('canvas1');
 const ctx = canvas.getContext('2d');
@@ -13,6 +16,7 @@ baan.src = achtergrondAfbeelding;
 let scrollY = 0;
 let previousFrame = 0;
 let animationFrameId = 0;
+let elapsedGameTime = 0;
 let gamePaused = false;
 let gameOver = false;
 let levens = 3;
@@ -31,6 +35,8 @@ const updateLevens = () => {
     levensElement.setAttribute('aria-label', `Levens: ${levens}`);
 };
 
+updateLevens();
+
 let positieX = 287;
 let canPress = true;
 const speed = 215;
@@ -48,7 +54,10 @@ const tekenFrame = (tijd) => {
 
     const verstreken = previousFrame ? tijd - previousFrame : 0;
     previousFrame = tijd;
-    scrollY = (scrollY + verstreken * 0.2) % canvas.height;
+    elapsedGameTime += verstreken;
+    const speedMultiplier = Math.pow(1.005, elapsedGameTime /250);
+    const gameVerstreken = verstreken * speedMultiplier;
+    scrollY = (scrollY + gameVerstreken * 0.2) % canvas.height;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(baan, 0, scrollY - canvas.height, canvas.width, canvas.height);
@@ -63,18 +72,18 @@ const tekenFrame = (tijd) => {
         top: spelerBoven + spelerHoogte * 0.2,
         bottom: spelerBoven + spelerHoogte * 0.85,
     };
-    tijdTotVolgendeVal -= verstreken;
+    tijdTotVolgendeVal -= gameVerstreken;
     if (val.complete && val.naturalWidth > 0 && tijdTotVolgendeVal <= 0) {
         vallen.push({
             baan: Math.floor(Math.random() * baanPosities.length),
             y: -valHoogte,
         });
-        tijdTotVolgendeVal = 1200 + Math.random() * 1000;
+        tijdTotVolgendeVal = 750 + Math.random() * 1175;
     }
 
     for (let i = vallen.length - 1; i >= 0; i--) {
         const vallendeVal = vallen[i];
-        vallendeVal.y += verstreken * 0.2;
+        vallendeVal.y += gameVerstreken * 0.2;
 
         const x = baanPosities[vallendeVal.baan] + spelerBreedte / 2 - valBreedte / 2;
         ctx.drawImage(val, x, vallendeVal.y, valBreedte, valHoogte);
@@ -82,8 +91,8 @@ const tekenFrame = (tijd) => {
         const valHitbox = {
             left: x + valBreedte * 0.28,
             right: x + valBreedte * 0.72,
-            top: vallendeVal.y + valHoogte * 0.43,
-            bottom: vallendeVal.y + valHoogte * 0.76,
+            top: vallendeVal.y + valHoogte * 0.8,
+            bottom: vallendeVal.y + valHoogte * 0.60,
         };
         const raaktRat =
             valHitbox.left < ratHitbox.right &&
@@ -122,6 +131,7 @@ const herstartSpel = () => {
     positieX = 287;
     scrollY = 0;
     previousFrame = 0;
+    elapsedGameTime = 0;
     tijdTotVolgendeVal = 1000;
     gamePaused = false;
     gameOver = false;
@@ -148,9 +158,9 @@ document.addEventListener('keydown', (event) => {
 
     const toets = event.key.toLowerCase();
 
-    if (toets === 'a') {
+   if (toets === 'a' || toets === 'arrowleft') {
         positieX = Math.max(minX, positieX - speed);
-    } else if (toets === 'd') {
+    } else if (toets === 'd' || toets === 'arrowright') {
         positieX = Math.min(maxX, positieX + speed);
     } else {
         return;
