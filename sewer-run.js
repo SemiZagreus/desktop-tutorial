@@ -5,6 +5,17 @@ const val = new Image();
 val.src = valAfbeelding;
 const hart = new Image();
 hart.src = 'images/hart.png';
+const muziek = new Audio('../../../muziek/level%201.mp3');
+muziek.loop = true;
+muziek.volume = 0.35;
+
+const startMuziek = () => {
+    if (!muziek.paused) return;
+
+    muziek.play().catch((error) => {
+        console.error('De muziek kon niet worden afgespeeld:', error);
+    });
+};
 
 
 const canvas = document.getElementById('canvas1');
@@ -20,12 +31,16 @@ let elapsedGameTime = 0;
 let gamePaused = false;
 let gameOver = false;
 let levens = 3;
+const spelDuurSeconden = 90;
+const vallenStoppenNaSeconden = 87;
 
 const afbeelding = document.getElementById('playerimage');
 afbeelding.src = spelerAfbeelding;
 const levensElement = document.getElementById('levens');
 const gameOverElement = document.getElementById('game-over');
+const endScreenImage = document.getElementById('end-screen-image');
 const restartButton = document.getElementById('restart-button');
+const timerElement = document.getElementById('timer');
 
 const updateLevens = () => {
     const hartjes = levensElement.querySelectorAll('img');
@@ -36,6 +51,9 @@ const updateLevens = () => {
 };
 
 updateLevens();
+
+document.addEventListener('pointerdown', startMuziek, { once: true });
+document.addEventListener('keydown', startMuziek);
 
 let positieX = 287;
 let canPress = true;
@@ -50,12 +68,21 @@ const valBreedte = 110;
 const valHoogte = 132;
 
 const tekenFrame = (tijd) => {
-    if (gamePaused || gameOver) return;
+   if (gamePaused || gameOver) return;
 
     const verstreken = previousFrame ? tijd - previousFrame : 0;
     previousFrame = tijd;
     elapsedGameTime += verstreken;
-    const speedMultiplier = Math.pow(1.005, elapsedGameTime /250);
+    timerElement.textContent = Math.floor(elapsedGameTime / 1000);
+    if (elapsedGameTime >= spelDuurSeconden * 1000) {
+        gameOver = true;
+        endScreenImage.src = 'images/Escape.png';
+        endScreenImage.alt = 'Escaped';
+        gameOverElement.hidden = false;
+        return;
+    }
+
+    const speedMultiplier = Math.min(Math.pow(1.005, elapsedGameTime / 180), 4.25);
     const gameVerstreken = verstreken * speedMultiplier;
     scrollY = (scrollY + gameVerstreken * 0.2) % canvas.height;
 
@@ -73,7 +100,12 @@ const tekenFrame = (tijd) => {
         bottom: spelerBoven + spelerHoogte * 0.85,
     };
     tijdTotVolgendeVal -= gameVerstreken;
-    if (val.complete && val.naturalWidth > 0 && tijdTotVolgendeVal <= 0) {
+    if (
+        elapsedGameTime < vallenStoppenNaSeconden * 1000 &&
+        val.complete &&
+        val.naturalWidth > 0 &&
+        tijdTotVolgendeVal <= 0
+    ) {
         vallen.push({
             baan: Math.floor(Math.random() * baanPosities.length),
             y: -valHoogte,
@@ -107,6 +139,8 @@ const tekenFrame = (tijd) => {
 
             if (levens <= 0) {
                 gameOver = true;
+                endScreenImage.src = 'images/Game over.png';
+                endScreenImage.alt = 'Game over';
                 gameOverElement.hidden = false;
                 return;
             }
@@ -135,6 +169,8 @@ const herstartSpel = () => {
     tijdTotVolgendeVal = 1000;
     gamePaused = false;
     gameOver = false;
+    endScreenImage.src = 'images/Game over.png';
+    endScreenImage.alt = 'Game over';
     gameOverElement.hidden = true;
     updateLevens();
     afbeelding.style.left = `${(positieX / canvas.width) * 100}%`;
